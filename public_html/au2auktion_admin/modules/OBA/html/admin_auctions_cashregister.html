@@ -1,0 +1,315 @@
+<form action="/" method="post" id="formAuctionInvoice">
+<input type="hidden" name="module" value="{MODULE}" />
+<input type="hidden" name="page" value="{PAGE}" />
+<input type="hidden" name="do" value="{DO}" />
+<input type="hidden" name="id" value="{ID}" />
+<input type="hidden" name="do2" value="create_invoice" />
+
+<table>
+	<tr>
+		<th>
+			Kundeinfo
+		</th>
+		<th>
+			Auktionsinfo
+		</th>
+	</tr>
+	<tr>
+		<td width="50%">
+			<table>
+				<tr>
+					<td>
+						Navn:
+					</td>
+					<td>
+						<input type="text" id="name" name="name" value="{NAME}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Adresse:
+					</td>
+					<td>
+						<input type="text" name="address" id="address" value="{ADDRESS}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Adresse 2:
+					</td>
+					<td>
+						<input type="text" name="address2" id="address2" value="{ADDRESS2}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Postnr:
+					</td>
+					<td>
+						<input type="text" name="zipcode" id="zipcode" value="{ZIPCODE}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						By:
+					</td>
+					<td>
+						<input type="text" name="city" id="city" value="{CITY}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Telefon:
+					</td>
+					<td>
+						<input type="text" name="phone" id="phone" value="{PHONE}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						E-mail:
+					</td>
+					<td>
+						<input type="text" name="email" value="{EMAIL}" />
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td nowrap width="50%">
+			<div id="divImage" style="background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; background-image: url(/modules/{MODULE}/upl/image_{IMAGE_ID}.jpg); float: left; margin-right: 20px; width: 100px; height: 100px;"></div>
+			Auktionsnr: {AUCTION_NO}<br>
+			Bud: {CUR_PRICE}
+		</td>
+	</tr>
+</table>
+<br>
+
+<table>
+	<tr>
+		<th>
+			Tilvalg
+		</th>
+		<th>
+			Pris
+		</th>
+	</tr>
+	<tr>
+		<td>
+			<input type="checkbox" id="re_registration" onclick="Recalc();" /> Omregistrering
+		</td>
+		<td align="right">
+			{RE_REGISTRATION}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Hjem-transport km: <input type="text" id="trans_km" name="trans_km" onchange="Recalc();" onkeyup="Recalc();" value="0" size="3" /> 
+			<input type="button" value="Google>" onclick="window.open('https://maps.google.dk/?q={COMPANY_ADDRESS},{COMPANY_ZIPCITY}+til+' + escape($('#address').val() + ',' + $('#zipcity').val()));" />
+		</td>
+		<td align="right">
+			{TRANS_START} + {TRANS_PR_KM}/km
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Afhent dato: <input type="text" id="pickup_date" onchange="Recalc();" size="10" value="{DATETIME|%d-%m-%Y}" />
+			<script>
+$('#pickup_date').datepicker({
+	dateFormat: 'dd-mm-yy',
+	minDate: '+0',
+	maxDate: '+180',
+	dayNamesMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'],
+	monthNames: ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
+	firstDay: 1
+});
+			</script>
+		</td>
+		<td align="right">
+			1 døgn gratis + {STORAGE_PR_DAY}/døgn
+		</td>
+	</tr>
+</table>
+<br>
+
+<table id="tableLines">
+	<tr>
+		<th>
+			Varetekst
+		</th>
+		<th>
+			Antal
+		</th>
+		<th>
+			Enhedspris
+		</th>
+		<th>
+			Subtotal
+		</th>
+	</tr>
+</table>
+<br>
+
+<input type="button" value="Opret faktura" onclick="CreateInvoice();" />
+
+</form>
+
+<script>
+function CreateInvoice()
+{
+	var errors = '';
+	if ($("#name").val() == '') errors += '\r\n- navn';
+	if ($("#address").val() == '') errors += '\r\n- adresse';
+	if ($("#zipcode").val() == '') errors += '\r\n- postnr';
+	if ($("#city").val() == '') errors += '\r\n- by';
+	if ($("#phone").val() == '') errors += '\r\n- telefon';
+	if ($("#email").val() == '') errors += '\r\n- e-mail';
+	if (errors != '')
+	{
+		alert('Flg. felter skal udfyldes:' + errors);
+		return false;
+	}
+	else
+	{
+		$("#formAuctionInvoice").submit();
+	}
+}
+
+function FormatNumber(price)
+{
+	var digits = 2;
+	// Tjekker om det er et negativt tal
+	if (price < 0)
+	{
+		price = -1 * price;
+		fortegn = '-';
+	}
+	else
+	{
+		fortegn = '';
+	}
+	// Finder heltal
+	floor = Math.floor(price);
+	// Finder decimal
+	decimal = Math.round((price - floor) * Math.pow(10, digits));
+	// Sørger for at der er præcis X decimaler
+	decimal = decimal.toString();
+	while (decimal.length < digits)
+	{
+		decimal = '0' + decimal;
+	}
+	// Returnerer tal
+	return fortegn + floor + ',' + decimal;	
+}
+
+function Recalc()
+{
+	var lines = [
+		{
+			title: 'Auktionsnr {AUCTION_NO}, {BRAND} {MODEL}',
+			price: {CUR_PRICE},
+			quantity: 1,
+			no_vat: {NO_VAT}
+		}
+	];
+	var salery = {CUR_PRICE} / 100 * {SALERY_PROCENT};
+	if (salery < {SALERY_MIN})
+	{
+		lines[lines.length] = {
+			title: 'Mindste salær',
+			price: {SALERY_MIN},
+			quantity: 1
+		};
+	}
+	else if (salery > {SALERY_MAX})
+	{
+		lines[lines.length] = {
+			title: 'Max salær',
+			price: {SALERY_MAX},
+			quantity: 1
+		};
+	}
+	else
+	{
+		lines[lines.length] = {
+			title: 'Salær {SALERY_PROCENT}% af {CUR_PRICE}',
+			price: salery,
+			quantity: 1
+		};
+	}
+	
+	if ($("#re_registration").prop("checked"))
+	{
+		lines[lines.length] = {
+			title: 'Omregistrering',
+			price: {RE_REGISTRATION},
+			quantity: 1
+		};
+	}
+	
+	var km = parseInt($("#trans_km").val());
+	if (!isNaN(km) && km > 0)
+	{
+		lines[lines.length] = {
+			title: 'Hjem-transport (' + km + ' km)',
+			price: ({TRANS_START} + {TRANS_PR_KM} * km),
+			quantity: 1
+		};
+	}
+	
+	var arr = $("#pickup_date").val().split("-");
+	var pickup_date = new Date(arr[2] + '-' + arr[1] + '-' + arr[0]);
+	var today_date = new Date("{DATETIME|%Y-%m-%d}");
+	var pickup_days = pickup_date.getDate() - today_date.getDate() - 1;
+	if (pickup_days > 0)
+	{
+		lines[lines.length] = {
+			title: 'Udsat afhentning, 1 døgn gratis, ' + pickup_days + ' døgn betalt',
+			price: ({STORAGE_PR_DAY} * pickup_days),
+			quantity: 1
+		};
+	}
+	
+	// Alle linier
+	$("#tableLines .trLine").remove();
+	var total = 0;
+	var vat_base = 0;
+	for (var i = 0; i < lines.length; i++)
+	{
+		$("#tableLines tr:last").after('<tr class="trLine">' +
+			'<td><input type="text" name="title' + i + '" value="' + lines[i]['title'] + '" size="50" readonly /></td>' +
+			'<td><input type="text" name="quantity' + i + '" value="' + lines[i]['quantity'] + '" size="3" readonly /></td>' +
+			'<td><input type="text" name="price' + i + '" value="' + FormatNumber(lines[i]['price']) + '" size="10" readonly style="text-align: right;" /></td>' +
+			'<td><input type="text" name="total' + i + '" value="' + FormatNumber(lines[i]['quantity'] * lines[i]['price']) + '" size="10" readonly style="text-align: right;" /></td>' +
+			(lines[i]['no_vat'] == 1 ? '<td>* momsfri<input type="hidden" name="no_vat' + i + '" value="1" /></td>' : '') +
+			'</tr>');
+		total += (lines[i]['quantity'] * lines[i]['price']);
+		if (lines[i]['no_vat'] != 1) vat_base += (lines[i]['quantity'] * lines[i]['price']);
+	}
+	
+	// Total uden moms
+	$("#tableLines tr:last").after('<tr class="trLine">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Total uden moms:</td>' +
+		'<td><input type="text" value="' + FormatNumber(total) + '" size="10" style="text-align: right;" readonly /></td>' +
+		'</tr>');
+	
+	// Moms
+	$("#tableLines tr:last").after('<tr class="trLine">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Moms ({VAT_PCT}%):</td>' +
+		'<td><input type="text" value="' + FormatNumber(vat_base / 100 * {VAT_PCT}) + '" size="10" style="text-align: right;" readonly /></td>' +
+		'</tr>');
+	
+	// Total med moms
+	$("#tableLines tr:last").after('<tr class="trLine">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Total med moms:</td>' +
+		'<td><input type="text" value="' + FormatNumber(total + vat_base / 100 * {VAT_PCT}) + '" size="10" style="text-align: right;" readonly /></td>' +
+		'</tr>');
+}
+
+Recalc();
+</script>

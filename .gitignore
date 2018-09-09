@@ -1,0 +1,6 @@
+_backup/
+_project/
+public_html/phpmyadmin/
+/public_html/nbproject/private/
+
+error_log

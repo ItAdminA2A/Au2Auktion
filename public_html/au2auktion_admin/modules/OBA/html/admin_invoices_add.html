@@ -1,0 +1,333 @@
+<form action="/" method="post" id="formAddInvoice">
+<input type="hidden" name="module" value="{MODULE}" />
+<input type="hidden" name="page" value="{PAGE}" />
+<input type="hidden" name="do" value="{DO}" />
+<input type="hidden" name="id" value="{ID}" />
+<input type="hidden" name="do2" id="do2" value="" />
+<input type="hidden" name="lines_count" value="0" id="lines_count" />
+
+<table>
+	<tr>
+		<th>
+			Kundeinfo
+		</th>
+	</tr>
+	<tr>
+		<td width="50%">
+			<table>
+				<tr>
+					<td>
+						Navn / Søg:
+					</td>
+					<td>
+						<input type="text" id="name" name="name" value="{NAME}" />
+						<script> $("#name").focus(); </script>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Adresse:
+					</td>
+					<td>
+						<input type="text" name="address" id="address" value="{ADDRESS}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Adresse 2:
+					</td>
+					<td>
+						<input type="text" name="address2" id="address2" value="{ADDRESS2}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Postnr:
+					</td>
+					<td>
+						<input type="text" name="zipcode" id="zipcode" value="{ZIPCODE}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						By:
+					</td>
+					<td>
+						<input type="text" name="city" id="city" value="{CITY}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Telefon:
+					</td>
+					<td>
+						<input type="text" name="phone" id="phone" value="{PHONE}" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						E-mail:
+					</td>
+					<td>
+						<input type="text" name="email" id="email" value="{EMAIL}" />
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<br>
+
+<table id="tableLines">
+	<tr>
+		<th>
+			Varetekst
+		</th>
+		<th>
+			Antal
+		</th>
+		<th>
+			Enhedspris
+		</th>
+		<th>
+			Subtotal
+		</th>
+		<th>
+			Momsfri
+		</th>
+	</tr>
+</table>
+<br>
+
+<input type="button" value="Gem kladde" onclick="SaveInvoice();" />
+<input type="button" value="Opret faktura" onclick="CreateInvoice();" />
+
+</form>
+
+<script>
+function SaveInvoice()
+{
+	$("#do2").val('save_invoice');
+	$("#formAddInvoice").submit();
+}
+
+function CreateInvoice()
+{
+	var errors = '';
+	if ($("#name").val() == '') errors += '\r\n- navn';
+	if ($("#address").val() == '') errors += '\r\n- adresse';
+	if ($("#zipcity").val() == '') errors += '\r\n- postnr. & by';
+	if ($("#phone").val() == '') errors += '\r\n- telefon';
+	if ($("#email").val() == '') errors += '\r\n- e-mail';
+	if (errors != '')
+	{
+		alert('Flg. felter skal udfyldes:' + errors);
+		return false;
+	}
+	else
+	{
+		$("#do2").val('create_invoice');
+		$("#formAddInvoice").submit();
+	}
+}
+
+function FormatNumber(price)
+{
+	var digits = 2;
+	// Tjekker om det er et negativt tal
+	if (price < 0)
+	{
+		price = -1 * price;
+		fortegn = '-';
+	}
+	else
+	{
+		fortegn = '';
+	}
+	// Finder heltal
+	floor = Math.floor(price);
+	// Finder decimal
+	decimal = Math.round((price - floor) * Math.pow(10, digits));
+	// Sørger for at der er præcis X decimaler
+	decimal = decimal.toString();
+	while (decimal.length < digits)
+	{
+		decimal = '0' + decimal;
+	}
+	// Returnerer tal
+	return fortegn + floor + ',' + decimal;	
+}
+
+function Recalc()
+{
+	var total_with_vat = 0;
+	var vat = 0;
+	for (var i = 0; i < lines.length; i++)
+	{
+		if ($("#title" + i).val() != '' && $("#quantity" + i).val() != '' && $("#price" + i).val() != '')
+		{
+			var q = parseInt($("#quantity" + i).val());
+			var p = parseFloat($("#price" + i).val().replace(",", "."));
+			var t = q * p;
+			
+			$("#total" + i).val(FormatNumber(t));
+			total_with_vat += t;
+			
+			if ($("#no_vat" + i + ":checked").length == 0) vat += (t / (100 + {VAT_PCT}) * {VAT_PCT});
+			
+			if (i == lines.length - 1) AddBlankLine();
+		}
+		else
+		{
+			$("#total" + i).val('*tom*');
+		}
+	}
+	
+	// Total uden moms
+	$("#total_ex_vat").val(FormatNumber(total_with_vat - vat));
+	
+	// Moms
+	$("#total_vat").val(FormatNumber(vat));
+	
+	// Total med moms
+	$("#total_incl_vat").val(FormatNumber(total_with_vat));
+}
+
+function AddBlankLine()
+{
+	var i = lines.length;
+	lines[i] = {
+		title: '',
+		quantity: 1,
+		price: 0,
+		no_vat: 0
+	};
+	
+	$("#lines_count").val(i);
+
+	$("#tableLines #TotalBegins").before('<tr class="trLine">' +
+		'<td><input type="text" name="title' + i + '" id="title' + i + '" onchange="Recalc();" onkeyup="Recalc();" value="' + lines[i]['title'] + '" size="50" /></td>' +
+		'<td><input type="text" name="quantity' + i + '" id="quantity' + i + '" onchange="Recalc();" onkeyup="Recalc();" value="' + lines[i]['quantity'] + '" size="3" /></td>' +
+		'<td><input type="text" name="price' + i + '" id="price' + i + '" onchange="Recalc();" onkeyup="Recalc();" value="' + lines[i]['price'] + '" size="10" style="text-align: right;" /></td>' +
+		'<td><input type="text" name="total' + i + '" id="total' + i + '" disabled value="*tom*" size="10" readonly style="text-align: right;" /></td>' +
+		'<td align="center"><input type="checkbox" name="no_vat' + i + '" id="no_vat' + i + '" onclick="Recalc();" /></td>' +
+		'</tr>');
+}
+
+function InitLines()
+{
+	// Alle linier
+	var total_with_vat = 0;
+	var vat = 0;
+	for (var i = 0; i < lines.length; i++)
+	{
+		$("#tableLines tr:last").after('<tr class="trLine">' +
+			'<td><input type="text" name="title' + i + '" id="title' + i + '" value="' + lines[i]['title'] + '" onchange="Recalc();" onkeyup="Recalc();" size="50" /></td>' +
+			'<td><input type="text" name="quantity' + i + '" id="quantity' + i + '" value="' + lines[i]['quantity'] + '" onchange="Recalc();" onkeyup="Recalc();" size="3" /></td>' +
+			'<td><input type="text" name="price' + i + '" id="price' + i + '" value="' + FormatNumber(lines[i]['price']) + '" onchange="Recalc();" onkeyup="Recalc();" size="10" style="text-align: right;" /></td>' +
+			'<td><input type="text" name="total' + i + '" id="total' + i + '" value="' + FormatNumber(lines[i]['quantity'] * lines[i]['price']) + '" size="10" disabled readonly style="text-align: right;" /></td>' +
+			'<td align="center"><input type="checkbox" name="no_vat' + i + '" id="no_vat' + i + '" onclick="Recalc();" ' + (lines[i]['no_vat'] == '1' ? 'checked' : '') + ' /></td>' +
+			'</tr>');
+		total_with_vat += (lines[i]['quantity'] * lines[i]['price']);
+		if (lines[i]['no_vat'] != '1') vat += (lines[i]['quantity'] * lines[i]['price'] / (100 + {VAT_PCT}) * {VAT_PCT});
+	}
+	
+	// Total med moms
+	$("#tableLines tr:last").after('<tr class="trLine" id="TotalBegins">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Total med moms:</td>' +
+		'<td><input type="text" id="total_incl_vat" value="' + FormatNumber(total_with_vat) + '" size="10" style="text-align: right;" disabled readonly /></td>' +
+		'</tr>');
+		
+	// Heraf Moms
+	$("#tableLines tr:last").after('<tr class="trLine">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Heraf Moms ({VAT_PCT}%):</td>' +
+		'<td><input type="text" id="total_vat" value="' + FormatNumber(vat) + '" size="10" style="text-align: right;" disabled readonly /></td>' +
+		'</tr>');
+	
+	// Total uden moms
+	$("#tableLines tr:last").after('<tr class="trLine">' +
+		'<td></td>' +
+		'<td></td>' +
+		'<td>Total uden moms:</td>' +
+		'<td><input type="text" id="total_ex_vat" value="' + FormatNumber(total_with_vat - vat) + '" size="10" style="text-align: right;" disabled readonly /></td>' +
+		'</tr>');
+	
+	AddBlankLine();
+}
+
+var lines = [{LINES}];
+InitLines();
+</script>
+
+<style>
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+height: 100px;
+}
+</style>
+<script>
+var searchResults = [];
+
+$(function() {
+	$( "#name" ).autocomplete({
+		source: function(searchstring, callback) {
+			new ajax{AJAX}('search_cust', {
+				searchstring: searchstring.term
+			}, function(val) {
+				if (val['state'] && val['state'] == 'ok' && val['count'] && !isNaN(val['count']))
+				{
+					var results = [];
+					for (var i = 0; i < parseInt(val['count']); i++)
+					{
+						results[results.length] = {
+							value: val['id' + i],
+							label: val['name' + i] + " | " + val['phone' + i] + " | " + val['email' + i]
+						};
+						searchResults[val['id' + i]] = {
+							'type': val['type' + i],
+							'name': val['name' + i],
+							'address': val['address' + i],
+							'zipcode': val['zipcode' + i],
+							'city': val['city' + i],
+							'phone': val['phone' + i],
+							'email': val['email' + i],
+							'bank_regno': val['bank_regno' + i],
+							'bank_account': val['bank_account' + i],
+							'vat': val['vat' + i]
+						};
+					}
+					callback(results);
+				}
+				else
+				{
+					callback([]);
+				}
+			}, 'POST', true);
+		},
+		minLength: 2,
+		select: function( event, ui ) {
+			$("#name").val(searchResults[ui.item.value]['name']);
+			var arr = searchResults[ui.item.value]['address'].split('\n');
+			$("#address").val(arr[0]);
+			$("#address2").val(arr[1]);
+			$("#zipcode").val(searchResults[ui.item.value]['zipcode']);
+			$("#city").val(searchResults[ui.item.value]['city']);
+			$("#phone").val(searchResults[ui.item.value]['phone']);
+			$("#email").val(searchResults[ui.item.value]['email']);
+			event.preventDefault();
+		}
+	});
+});
+</script>

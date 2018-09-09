@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="{LANG_ID}">
+
+<head>
+	<title>{SITE_TITLE}</title>
+	<link rel="stylesheet" href="/layouts/{SITE_LAYOUT}/css/default.css?1">
+	{TPL|jquery}
+	{TPL|LAYOUT|{SITE_LAYOUT}|jquery_popup}
+</head>
+
+<body>
+
+<div style="position: absolute; width: 200px; padding: 10px; z-index: 2;">
+	<img src="/layouts/{SITE_LAYOUT}/img/logo.png" />
+	{MODULE|OBA|keep_alive}
+	{MODULE|OBA|admin|menu}
+</div>
+
+<div style="position: absolute; left: 210px; padding: 10px; padding-left: 20px; z-index: 1;">
+	{HTML}
+</div>
+
+<div style="width: 0px; height: 0px; overflow: hidden;">
+	<iframe id="iframeHidden" name="iframeHidden" width="0" height="0" frameborder="0" framespacing="0" src="about:blank"></iframe>
+</div>
+
+</body>
+
+</html>

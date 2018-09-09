@@ -1,0 +1,83 @@
+<style>
+<!--
+.divTab
+{
+	background-image: url('/img/css_editor_tab_inactive.gif');
+}
+.divTab a
+{
+	color: #808080;
+}
+.divTab1
+{
+	background-image: url('/img/css_editor_tab_active.gif');
+}
+-->
+</style>
+
+<script language="JavaScript">
+<!--
+function SwitchTab(group)
+{
+	document.getElementById('next_group').value = group;
+	document.getElementById('css_form').submit();
+}
+
+function PopupColorPalette(elm)
+{
+	val = document.getElementById(elm).value;
+	Popup('?page=popup_colors&return=' + escape('window.opener.UpdateColor(\'' + elm + '\',color);'), 575, 450);
+}
+
+function UpdateColor(elm, color)
+{
+	document.getElementById(elm).value = color;
+	document.getElementById('example_' + elm).style.background = color;
+}
+
+function PopupImageChooser(elm)
+{
+	val = document.getElementById(elm).value;
+	val = val.replace(/url\(/gi, '');
+	val = val.replace(/\)/gi, '');
+	val = val.replace(/\'/gi, '');
+	Popup('?page=popup_images&return=' + escape('window.opener.UpdateImage(\'' + elm + '\',image);'), 575, 450);
+}
+
+function UpdateImage(elm, image)
+{
+	if (image != '') image = 'url(\'' + image + '\')';
+	document.getElementById(elm).value = image;
+	document.getElementById('example_' + elm).style.background = image;
+}
+-->
+</script>
+
+<form action="?" method="post" id="css_form" onsubmit="document.getElementById('css_submit').disabled = true;">
+<input type="hidden" name="page" value="{PAGE}">
+<input type="hidden" name="do" value="{DO}">
+<input type="hidden" name="id" value="{ID}">
+<input type="hidden" name="file" value="{FILE}">
+<input type="hidden" name="do2" value="save">
+<input type="hidden" name="group" value="{GROUP}">
+<input type="hidden" name="next_group" id="next_group" value="">
+<input type="hidden" name="mod" id="mod" value="{MOD}">
+<table width="600" cellspacing="0" cellpadding="0">
+	<tr>
+		<td valign="top" width="106" style="background-image: url('/img/css_editor_tab_background.gif'); padding-bottom: 5px; text-align: center;">
+			{TABS}
+		</td>
+		<td valign="top" width="494" style="border-top: 1px solid #C3C3C3; border-right: 1px solid #C3C3C3; border-bottom: 1px solid #C3C3C3;">
+			<div style="padding-left: 10px;">
+			<h2>{TITLE}</h2>
+				<table>
+					{ELEMENTS}
+				</table>
+				<div style="padding-top: 15px; text-align: center;">
+					<input type="submit" value="{LANG|Gem ændringer}" id="css_submit">
+				</div>
+			</div>
+		</td>
+	</tr>
+</table>
+</form>

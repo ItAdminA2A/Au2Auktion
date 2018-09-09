@@ -1,0 +1,13 @@
+ErrorDocument 404 /index.php
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
+deny from 109.201.154.65
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php56” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddType application/x-httpd-ea-php56 .php .php5 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

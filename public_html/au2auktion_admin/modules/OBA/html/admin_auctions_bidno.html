@@ -1,0 +1,75 @@
+<style>
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+height: 100px;
+}
+</style>
+<script>
+$("#number").focus();
+
+var searchResults = [];
+
+$(function() {
+	$( "#name" ).autocomplete({
+		source: function(searchstring, callback) {
+			new ajax{AJAX}('search_cust', {
+				searchstring: searchstring.term
+			}, function(val) {
+				if (val['state'] && val['state'] == 'ok' && val['count'] && !isNaN(val['count']))
+				{
+					var results = [];
+					for (var i = 0; i < parseInt(val['count']); i++)
+					{
+						results[results.length] = {
+							value: val['id' + i],
+							label: val['name' + i] + " | " + val['phone' + i] + " | " + val['email' + i]
+						};
+						searchResults[val['id' + i]] = {
+							'type': val['type' + i],
+							'name': val['name' + i],
+							'address': val['address' + i],
+							'zipcode': val['zipcode' + i],
+							'city': val['city' + i],
+							'phone': val['phone' + i],
+							'email': val['email' + i],
+							'bank_regno': val['bank_regno' + i],
+							'bank_account': val['bank_account' + i],
+							'vat': val['vat' + i]
+						};
+					}
+					callback(results);
+				}
+				else
+				{
+					callback([]);
+				}
+			}, 'POST', true);
+		},
+		minLength: 2,
+		select: function( event, ui ) {
+			$("#cust_id").val(ui.item.value);
+			$("#type").val(searchResults[ui.item.value]['type']);
+			$("#name").val(searchResults[ui.item.value]['name']);
+			var arr = searchResults[ui.item.value]['address'].split('\n');
+			$("#address").val(arr[0]);
+			$("#address2").val(arr[1]);
+			$("#zipcode").val(searchResults[ui.item.value]['zipcode']);
+			$("#city").val(searchResults[ui.item.value]['city']);
+			$("#phone").val(searchResults[ui.item.value]['phone']);
+			$("#email").val(searchResults[ui.item.value]['email']);
+			$("#bank_regno").val(searchResults[ui.item.value]['bank_regno']);
+			$("#bank_account").val(searchResults[ui.item.value]['bank_account']);
+			$("#vat").val(searchResults[ui.item.value]['vat']);
+			event.preventDefault();
+		}
+	});
+});
+</script>

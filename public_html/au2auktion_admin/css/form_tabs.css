@@ -1,0 +1,59 @@
+.tabActiveLeft, .tabInactiveLeft, .tabActiveRight, .tabInactiveRight, .tabActiveMiddle, .tabInactiveMiddle,
+.tabErrorRight, .tabErrorMiddle, .tabErrorMiddle
+{
+	height: 24px; 
+	white-space: nowrap;
+}
+.tabActiveLeft, .tabInactiveLeft, .tabActiveRight, .tabInactiveRight, .tabErrorRight
+{
+	width: 11px;
+}
+.tabActiveLeft, .tabInactiveLeft, .tabActiveRight, .tabInactiveRight, .tabErrorLeft, .tabErrorRight
+{
+	font-size: 1pt;
+	background-repeat: no-repeat;
+}
+.tabActiveLeft
+{
+	background-image: url('/img/tab_active_left.gif');
+}
+.tabActiveMiddle
+{
+	background-image: url('/img/tab_active_middle.gif');
+}
+.tabActiveRight
+{
+	background-image: url('/img/tab_active_right.gif');
+}
+.tabInactiveLeft
+{
+	background-image: url('/img/tab_inactive_left.gif');
+}
+.tabInactiveMiddle
+{
+	background-image: url('/img/tab_inactive_middle.gif');
+}
+.tabInactiveMiddle a
+{
+	color: #808080;
+}
+.tabInactiveRight
+{
+	background-image: url('/img/tab_inactive_right.gif');
+}
+.tabErrorLeft
+{
+	background-image: url('/img/tab_error_left.gif');
+}
+.tabErrorMiddle
+{
+	background-image: url('/img/tab_error_middle.gif');
+}
+.tabErrorMiddle a
+{
+	color: #808080;
+}
+.tabErrorRight
+{
+	background-image: url('/img/tab_error_right.gif');
+}

@@ -1,0 +1,62 @@
+<table width="800">
+	<tr>
+		<td>
+			<h1>FAKTURA</h1>
+			
+			{NAME}<br>
+			{ADDRESS}<br>
+			{ZIPCITY}
+		</td>
+		<td align="left" width="12%">
+			Fakturanr:<br>
+			Fakturadato:
+		</td>
+		<td align="left" width="12%">
+			{INVOICE_NO}<br>
+			{INVOICE_DATE}
+		</td>
+	</tr>
+</table>
+<br>
+
+<table width="800">
+	<tr>
+		<th>
+			Varetekst
+		</th>
+		<th>
+			Antal
+		</th>
+		<th>
+			Enhedspris
+		</th>
+		<th>
+			Subtotal
+		</th>
+	</tr>
+	{LINES}
+	<tr>
+		<td colspan="3" align="right">
+			Total uden moms:
+		</td>
+		<td align="right">
+			{TOTAL}
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="right">
+			Moms ({VAT_PCT}%):
+		</td>
+		<td align="right">
+			{VAT}
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="right">
+			Total med moms:
+		</td>
+		<td align="right">
+			{TOTAL_VAT}
+		</td>
+	</tr>
+</table>

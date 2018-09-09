@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+
+<head>
+	<title>{SITE_TITLE}</title>
+	<link rel="stylesheet" href="/layouts/{SITE_LAYOUT}/css/default.css">
+
+	<meta name="Title" content="{SITE_KEYWORDS}">
+	<meta name="Description" content="{SITE_DESCRIPTION}">
+	<meta name="Abstract" content="{SITE_DESCRIPTION}">
+	<meta name="keywords" content="{SITE_KEYWORDS}">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+	<meta name="revisit-after" content="3 days">
+	<meta name="copyright" content="{SITE_TITLE}">
+	<meta name="rating" content="General">
+	<meta name="robots" content="index,follow,all">
+	<meta name="author" content="{SITE_TITLE}">
+	<meta http-equiv="Content-language" content="dan">
+	<meta name="DC.Title" content="{SITE_KEYWORDS}">
+	<meta name="DC.Creator" content="{SITE_TITLE}">
+	<meta name="DC.Description" content="{SITE_DESCRIPTION}">
+	<meta name="DC.Subject" content="{SITE_KEYWORDS}">
+</head>
+
+<body style="background-color: #f0f0f0;">
+
+<!-- COOL MENUS 4 -->	
+<link rel="stylesheet" href="/layouts/{SITE_LAYOUT}/css/menu.css">
+<script language="JavaScript1.2" src="/js/coolmenus/coolmenus4.js">
+/*****************************************************************************
+Copyright (c) 2001 Thomas Brattli (webmaster@dhtmlcentral.com)
+DHTML coolMenus - Get it at coolmenus.dhtmlcentral.com
+Version 4.0_beta
+This script can be used freely as long as all copyright messages are intact.
+******************************************************************************/
+</script>
+<script language="JavaScript1.2" src="/layouts/{SITE_LAYOUT}/js/menu.js"></script>
+<script>
+{PAGE|menu}
+oCMenu.construct()		
+</script>
+<!-- COOL MENUS 4 -->
+	
+<div align="center" width="100%" height="100%" style="overflow: hidden;">
+	<table width="750" height="100%" cellpadding="0" cellspacing="0" align="center" style="background-color: #ffffff; border-left: 1px solid #9293a5; border-right: 1px solid #9293a5;">
+		<tr>
+			<td colspan="2" width="748" height="153" style="background-image: url('/layouts/{SITE_LAYOUT}/img/top.gif'); text-align: center; vertical-align: absmiddle;">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" width="748" height="29" style="background-image: url('/layouts/{SITE_LAYOUT}/img/menubackground.gif'); text-align: center; vertical-align: absmiddle;">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" width="748" height="*" style="vertical-align: top; font-size: 9pt;">
+				<div>
+					Her er du: {BREADCRUMB}
+				</div>
+				<div style="padding: 20px; height: 100%; overflow: auto;">
+					Siden blev ikke fundet
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" width="748" height="17" style="text-align: center; font-size: 8pt; background-image: url('/layouts/{SITE_LAYOUT}/img/bottom.gif'); color: #606060;">
+				{SITE_TITLE} - <a href="mailto:{SITE_EMAIL}" style="color: #606060;">{SITE_EMAIL}</a>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+
+</html>

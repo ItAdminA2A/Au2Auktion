@@ -1,0 +1,95 @@
+	body
+	{
+		font-family: Arial;
+		font-size: 9pt;
+		margin: 0px;
+	}
+	p
+	{
+		margin: 0px;
+	}
+	a
+	{
+		color: #0000ff;
+		text-decoration: none;
+	}
+	a:hover
+	{
+		text-decoration: underline;
+	}
+	a img {
+		border: 0px;
+		vertical-align: middle;
+	}
+	th
+	{
+		font-size: 9pt;
+		text-align: left;
+	}
+	
+	td
+	{
+		font-size: 8pt;
+	}
+	
+	.td1, .td1a, .td2a, .td1right, .td1center
+	{
+		background-color: #f0f0f0;
+		border-top: 1px solid #ffffff;
+		border-right: 1px solid #ffffff;
+	}
+	
+	.td2, .td1b, .td2b, .td2right, .td2center
+	{
+		background-color: #e0e0e0;
+		border-top: 1px solid #ffffff;
+		border-right: 1px solid #ffffff;
+	}
+	
+	.td1a, .td2a, .td1b, .td2b
+	{
+		padding: 10px;
+		text-align: center;
+	}
+	
+	.td1right, .td2right
+	{
+		text-align: right;
+	}
+	
+	.td1center, .td2center
+	{
+		text-align: center;
+	}
+	
+	input, textarea, select
+	{
+		font-size: 8pt;
+		font-family: Arial;
+	}
+	
+	
+	{
+		font-size: 8pt;
+	}
+
+	form {
+		margin: 0px;
+	}
+	h1
+	{
+		font-size: 14pt;
+		font-weight: bold;
+		font-family: Arial;
+		margin-bottom: 5px;
+	}
+	
+	h2
+	{
+		font-size: 11pt;
+		font-weight: bold;
+		font-family: Arial;
+		margin-bottom: 3px;
+	}
+	
+

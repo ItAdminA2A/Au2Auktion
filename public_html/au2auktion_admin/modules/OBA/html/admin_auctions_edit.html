@@ -1,0 +1,136 @@
+<script>
+$(document).ready(function() {
+	$('#auction_date').datepicker({
+		dateFormat: 'dd-mm-yy',
+		minDate: '+0',
+		maxDate: '+180',
+		dayNamesMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'],
+		monthNames: ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
+		firstDay: 1
+	});
+	
+	$('#newly_tested_date').datepicker({
+		dateFormat: 'dd-mm-yy',
+		minDate: '-180',
+		maxDate: '+0',
+		dayNamesMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'],
+		monthNames: ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
+		firstDay: 1,
+		changeYear: true,
+		yearRange: "1950:+0",
+		changeMonth: true
+	});
+	
+	$('#first_reg_date').datepicker({
+		dateFormat: 'dd-mm-yy',
+		maxDate: '+0',
+		dayNamesMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'],
+		monthNames: ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'],
+		firstDay: 1,
+		changeYear: true,
+		yearRange: "1950:+0",
+		changeMonth: true
+	});
+	
+	$('#buttonLookupRegno').attr('disabled', ($('#regno').val() != '') ? false : 'disabled');
+	$('#regno').keyup(function() {
+		$('#buttonLookupRegno').attr('disabled', ($('#regno').val() != '') ? false : 'disabled');
+	});
+});		
+
+function LookupRegno()
+{
+	$('#buttonLookupRegno').attr('disabled', 'disabled');
+	new ajax{AJAX}('lookup_regno', {
+		regno: $('#regno').val()
+	}, function(val) {
+		$('#buttonLookupRegno').attr('disabled', false);
+		if (val['state'] && val['state'] == 'ok')
+		{
+			if (val['brand']) $('#brand').val(val['brand']);
+			if (val['model']) $('#model').val(val['model']);
+			if (val['variant']) $('#variant').val(val['variant']);
+			if (val['type']) $('#type').val(val['type']);
+			if (val['year']) $('#year').val(val['year']);
+			if (val['newly_tested']) $('#newly_tested').attr('checked', val['newly_tested'] == '1' ? 'checked' : false);
+			if (val['regno']) $('#is_regged').attr('checked', 'checked');
+			if (val['chasno']) $('#chasno').val(val['chasno']);
+			if (val['fuel']) $('#fuel').val(val['fuel']);
+		}
+	}, 'POST', true);
+}
+</script>
+
+<style>
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+height: 100px;
+}
+</style>
+<script>
+var searchResults = [];
+
+$(function() {
+	$( "#seller_name" ).autocomplete({
+		source: function(searchstring, callback) {
+			new ajax{AJAX}('search_cust', {
+				searchstring: searchstring.term
+			}, function(val) {
+				if (val['state'] && val['state'] == 'ok' && val['count'] && !isNaN(val['count']))
+				{
+					var results = [];
+					for (var i = 0; i < parseInt(val['count']); i++)
+					{
+						results[results.length] = {
+							value: val['id' + i],
+							label: val['name' + i] + " | " + val['phone' + i] + " | " + val['email' + i]
+						};
+						searchResults[val['id' + i]] = {
+							'type': val['type' + i],
+							'name': val['name' + i],
+							'address': val['address' + i],
+							'zipcode': val['zipcode' + i],
+							'city': val['city' + i],
+							'phone': val['phone' + i],
+							'email': val['email' + i],
+							'bank_regno': val['bank_regno' + i],
+							'bank_account': val['bank_account' + i],
+							'vat': val['vat' + i]
+						};
+					}
+					callback(results);
+				}
+				else
+				{
+					callback([]);
+				}
+			}, 'POST', true);
+		},
+		minLength: 2,
+		select: function( event, ui ) {
+			$("#seller_id").val(ui.item.value);
+			$("#seller_type").val(searchResults[ui.item.value]['type']);
+			$("#seller_name").val(searchResults[ui.item.value]['name']);
+			var arr = searchResults[ui.item.value]['address'].split('\n');
+			$("#seller_address").val(arr[0]);
+			$("#seller_address2").val(arr[1]);
+			$("#seller_zipcode").val(searchResults[ui.item.value]['zipcode']);
+			$("#seller_city").val(searchResults[ui.item.value]['city']);
+			$("#seller_phone").val(searchResults[ui.item.value]['phone']);
+			$("#seller_email").val(searchResults[ui.item.value]['email']);
+			$("#seller_bank_regno").val(searchResults[ui.item.value]['bank_regno']);
+			$("#seller_bank_account").val(searchResults[ui.item.value]['bank_account']);
+			$("#seller_vat").val(searchResults[ui.item.value]['vat']);
+			event.preventDefault();
+		}
+	});
+});
+</script>

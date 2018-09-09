@@ -1,0 +1,61 @@
+<script>
+function FormatNumber(price)
+{
+	var digits = 2;
+	// Tjekker om det er et negativt tal
+	if (price < 0)
+	{
+		price = -1 * price;
+		fortegn = '-';
+	}
+	else
+	{
+		fortegn = '';
+	}
+	// Finder heltal
+	floor = Math.floor(price);
+	// Finder decimal
+	decimal = Math.round((price - floor) * Math.pow(10, digits));
+	// Sørger for at der er præcis X decimaler
+	decimal = decimal.toString();
+	while (decimal.length < digits)
+	{
+		decimal = '0' + decimal;
+	}
+	// Returnerer tal
+	return fortegn + floor + ',' + decimal;	
+}
+
+function RecalcSellerPrice()
+{
+	var cur_price = {CUR_PRICE};
+	var cur_price_vat = ('{NO_VAT}' == '1' ? 0 : (cur_price / 100 * {VAT_PCT}));
+	if ('{NO_VAT}' == '0') $("#cur_price_vat").html(FormatNumber(cur_price_vat));
+	
+	var seller_salery = parseFloat("0" + $("#seller_salery").val().replace(",", "."));
+	var seller_salery_vat = seller_salery / 100 * {VAT_PCT};
+	
+	var mortgage_price = parseFloat("0" + $("#mortgage_price").val().replace(",", "."));
+	
+	if (isNaN(seller_salery) || isNaN(mortgage_price))
+	{
+		$("#seller_account_price").html('?');
+		$("#seller_salery_vat").html('?');
+	}
+	else
+	{
+		$("#seller_salery_vat").html(FormatNumber(seller_salery_vat));
+		$("#seller_account_price").html(FormatNumber(cur_price + cur_price_vat - seller_salery - mortgage_price - seller_salery_vat));
+	}
+}
+
+$(document).ready(function () {
+	$("#seller_salery").bind("change keyup", function() {
+		RecalcSellerPrice();
+	});
+	$("#mortgage_price").bind("change keyup", function() {
+		RecalcSellerPrice();
+	});
+	RecalcSellerPrice();
+});
+</script>

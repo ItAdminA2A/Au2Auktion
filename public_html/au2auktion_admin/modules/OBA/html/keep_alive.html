@@ -1,0 +1,61 @@
+<div id="divTime" style="text-align: center; height: 20px;"></div>
+<div id="divOnlineCount" style="text-align: center; height: 20px;">{ONLINE_COUNT} online</div>
+<div style="{IF|{APPROVE_COUNT}|0|display: none;||}; height: 20px; text-align: center;">
+	<a href="/site/{LANG_ID}/{MODULE}/admin/auctions_approve">Nye auktioner: {APPROVE_COUNT}</a>
+</div>
+<div style="{IF|{NEW_USER_COUNT}|0|display: none;||}; height: 20px; text-align: center;">
+	<a href="/site/{LANG_ID}/{MODULE}/admin/cust_inactive">Nye kunder: {NEW_USER_COUNT}</a>
+</div>
+<script>
+function KeepAliveTimer()
+{
+	if (intTimeout <= 0)
+	{
+		if (intTimeout == 0)
+		{
+			$("#divTime").html('<font color=red>' + $("#divTime").html() + '</font>');
+			intTimeout--;
+		}
+		return;
+	}
+		
+	dateNow.setSeconds(dateNow.getSeconds() + 1);
+	var y = dateNow.getFullYear().toString();
+	var m = (dateNow.getMonth() + 1).toString();
+	var d = dateNow.getDate().toString();
+	var h = dateNow.getHours().toString();
+	var i = dateNow.getMinutes().toString();
+	var s = dateNow.getSeconds().toString();
+	if (m.length < 2) m = '0' + m;
+	if (d.length < 2) d = '0' + d;
+	if (h.length < 2) h = '0' + h;
+	if (i.length < 2) i = '0' + i;
+	if (s.length < 2) s = '0' + s;
+	
+	$("#divTime").html(y + '-' + m + '-' + d + ' ' + h + ':' + i + ':' + s);
+	
+	intTimeout--;
+}
+function KeepAlive()
+{
+	new ajax{AJAX}('time', [], KeepAliveReturn, 'POST', true);
+}
+function KeepAliveReturn(val)
+{
+	if (val['state'] && val['state'] == 'ok' && val['time'])
+	{
+		dateNow = new Date(val['time']);
+		intTimeout = 20;
+		
+		if (val["online_count"])
+		{
+			$("#divOnlineCount").html(val["online_count"] + " online");
+		}
+	}
+}
+var dateNow = new Date('{DATETIME|%Y-%m-%d %H:%M:%S}');
+var intTimeout = 20;
+KeepAliveTimer();
+setInterval('KeepAliveTimer();', 1000);
+setInterval('KeepAlive();', 15000);
+</script>
