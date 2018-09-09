@@ -33,7 +33,7 @@
 		CIRCUMSTANCE, BE REMOVED FROM THIS FILE.
 	\*COPYRIGHT*/
 
-	// Start output buffer
+	// Start output buffer githubstest
 	ob_start();
 	
 	// Nødvendige filer
